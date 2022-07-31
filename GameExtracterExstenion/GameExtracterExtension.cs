@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace GameExtracterExstenion
 {
     [ComVisible(true)]
-    [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
+    [COMServerAssociation(AssociationType.Directory)]
     internal class GameExtracterExtension : SharpContextMenu
     {
         protected override bool CanShowMenu()
@@ -38,19 +38,28 @@ namespace GameExtracterExstenion
 
         private void ExtractGames()
         {
-            //  Builder for the output
-            var builder = new StringBuilder();
-
-            //  Go through each file
-            foreach (var filePath in SelectedItemPaths)
+            foreach (var path in SelectedItemPaths.ToList())
             {
-                //  Count the lines
-                builder.AppendLine(string.Format("{0} - {1} Lines",
-                  Path.GetFileName(filePath), File.ReadAllLines(filePath).Length));
-            }
+                var parent = Directory.GetParent(path).FullName;
 
-            //  Show the output
-            MessageBox.Show(builder.ToString());
+                foreach (var file in Directory.EnumerateFiles(path))
+                {
+                    if (file.EndsWith(".sfc"))
+                    {
+                        var fileInfo = new FileInfo(file);
+                        try
+                        {
+                            File.Move(fileInfo.FullName, $@"{parent}\{fileInfo.Name}");
+                            MessageBox.Show($"File: {fileInfo.Name}, was moved to: {parent}");
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message);
+                            MessageBox.Show($@"((BROKEN))File: {fileInfo.Name}, was not moved to: E:\GB");
+                        }
+                    }
+                }
+            }            
         }
     }
 }
