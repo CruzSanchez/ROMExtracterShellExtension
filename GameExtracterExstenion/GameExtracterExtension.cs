@@ -2,6 +2,7 @@
 using SharpShell.SharpContextMenu;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -26,7 +27,9 @@ namespace GameExtracterExstenion
 
             var extract = new ToolStripMenuItem()
             {
-                Text = "Extract Games"
+                Text = "Extract Games",
+                ShortcutKeys = Keys.Control | Keys.B,
+                Image = Image.FromFile($@"{Directory.GetCurrentDirectory()}\extracter-removebg.png")                
             };
 
             extract.Click += (s, e) => ExtractGames();
@@ -55,7 +58,7 @@ namespace GameExtracterExstenion
                         catch (Exception e)
                         {
                             MessageBox.Show(e.Message);
-                            MessageBox.Show($@"((BROKEN))File: {fileInfo.Name}, was not moved to: E:\GB");
+                            MessageBox.Show($@"((BROKEN))File: {fileInfo.Name}, was not moved to: {parent}");
                         }
                     }
                 }
